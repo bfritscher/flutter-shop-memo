@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>281865054216-eidk1u03c0j8nfudhttgki3kqh16vehm.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.281865054216-eidk1u03c0j8nfudhttgki3kqh16vehm</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAjVweah0fyrsmNbVnJtXkgl2dC6NBzOiA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>281865054216</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.shopMemo</string>
+	<key>PROJECT_ID</key>
+	<string>firebase-ptw</string>
+	<key>STORAGE_BUCKET</key>
+	<string>firebase-ptw.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:281865054216:ios:8e0e40316f785630f889bd</string>
+	<key>DATABASE_URL</key>
+	<string>https://ptw.firebaseio.com</string>
+</dict>
+</plist>
