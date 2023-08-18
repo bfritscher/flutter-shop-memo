@@ -1,5 +1,8 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,38 +21,153 @@ void main() async {
     return true;
   };
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+  final remoteConfig = FirebaseRemoteConfig.instance;
+  await remoteConfig.setConfigSettings(RemoteConfigSettings(
+    fetchTimeout: const Duration(minutes: 1),
+    minimumFetchInterval: const Duration(hours: 1),
+  ));
+  await remoteConfig.setDefaults(const {
+    "show_banner": false,
+  });
+
+  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  FirebaseUIAuth.configureProviders([
+    EmailAuthProvider(),
+    // ... other providers
+  ]);
+
+  // TODO use as stream
+  remoteConfig.onConfigUpdated.listen((event) async {
+    await remoteConfig.activate();
+    print("Remote config updated");
+    print(remoteConfig.getBool("show_banner"));
+    // Use the new config values here.
+  });
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  String get initialRoute {
+    final auth = FirebaseAuth.instance;
+
+    if (auth.currentUser == null) {
+      return '/';
+    }
+
+    if (!auth.currentUser!.emailVerified && auth.currentUser!.email != null) {
+      return '/verify-email';
+    }
+
+    return '/profile';
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // TRY THIS: Try running your application with "flutter run". You'll see
+          // the application has a blue toolbar. Then, without quitting the app,
+          // try changing the seedColor in the colorScheme below to Colors.green
+          // and then invoke "hot reload" (save your changes or press the "hot
+          // reload" button in a Flutter-supported IDE, or press "r" if you used
+          // the command line to start the app).
+          //
+          // Notice that the counter didn't reset back to zero; the application
+          // state is not lost during the reload. To reset the state, use hot
+          // restart instead.
+          //
+          // This works for code too, not just values: Most code changes can be
+          // tested with just a hot reload.
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        //home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        initialRoute: initialRoute,
+        routes: {
+          '/home': (context) =>
+              const MyHomePage(title: 'Flutter Demo Home Page'),
+          '/': (context) {
+            return SignInScreen(
+              actions: [
+                ForgotPasswordAction((context, email) {
+                  Navigator.pushNamed(
+                    context,
+                    '/forgot-password',
+                    arguments: {'email': email},
+                  );
+                }),
+                AuthStateChangeAction<SignedIn>((context, state) {
+                  if (!state.user!.emailVerified) {
+                    Navigator.pushNamed(context, '/verify-email');
+                  } else {
+                    Navigator.pushReplacementNamed(context, '/profile');
+                  }
+                }),
+              ],
+              subtitleBuilder: (context, action) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    action == AuthAction.signIn
+                        ? 'Welcome to Firebase UI! Please sign in to continue.'
+                        : 'Welcome to Firebase UI! Please create an account to continue',
+                  ),
+                );
+              },
+              footerBuilder: (context, action) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Text(
+                      action == AuthAction.signIn
+                          ? 'By signing in, you agree to our terms and conditions.'
+                          : 'By registering, you agree to our terms and conditions.',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+          '/verify-email': (context) {
+            return EmailVerificationScreen(
+              actions: [
+                EmailVerifiedAction(() {
+                  Navigator.pushReplacementNamed(context, '/profile');
+                }),
+                AuthCancelledAction((context) {
+                  FirebaseUIAuth.signOut(context: context);
+                  Navigator.pushReplacementNamed(context, '/');
+                }),
+              ],
+            );
+          },
+          '/profile': (context) {
+            return ProfileScreen(
+              actions: [
+                SignedOutAction((context) {
+                  Navigator.pushReplacementNamed(context, '/');
+                }),
+              ],
+              children: [
+                OutlinedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/home');
+                  },
+                  child: const Text('Home'),
+                ),
+              ],
+            );
+          },
+        });
   }
 }
 
@@ -75,8 +193,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
-  FirebaseAnalytics.instance
-      .logEvent(name: 'counter_incremented', parameters: null);
+    FirebaseAnalytics.instance
+        .logEvent(name: 'counter_incremented', parameters: null);
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below

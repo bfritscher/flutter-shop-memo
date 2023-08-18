@@ -1,0 +1,10 @@
+{
+  "parameters": {
+    "show_banner": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "valueType": "BOOLEAN"
+    }
+  }
+}
