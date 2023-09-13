@@ -23,15 +23,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -67,5 +61,27 @@ class DefaultFirebaseOptions {
     projectId: 'firebase-ptw',
     databaseURL: 'https://ptw.firebaseio.com',
     storageBucket: 'firebase-ptw.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAjVweah0fyrsmNbVnJtXkgl2dC6NBzOiA',
+    appId: '1:281865054216:ios:8e0e40316f785630f889bd',
+    messagingSenderId: '281865054216',
+    projectId: 'firebase-ptw',
+    databaseURL: 'https://ptw.firebaseio.com',
+    storageBucket: 'firebase-ptw.appspot.com',
+    iosClientId: '281865054216-eidk1u03c0j8nfudhttgki3kqh16vehm.apps.googleusercontent.com',
+    iosBundleId: 'com.example.shopMemo',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAjVweah0fyrsmNbVnJtXkgl2dC6NBzOiA',
+    appId: '1:281865054216:ios:9b6804d79ab4c6f9f889bd',
+    messagingSenderId: '281865054216',
+    projectId: 'firebase-ptw',
+    databaseURL: 'https://ptw.firebaseio.com',
+    storageBucket: 'firebase-ptw.appspot.com',
+    iosClientId: '281865054216-ut4ip07ghg3s803dq676h9sck6qao9j5.apps.googleusercontent.com',
+    iosBundleId: 'com.example.shopMemo.RunnerTests',
   );
 }

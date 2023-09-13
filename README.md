@@ -2,6 +2,11 @@
 
 A new Flutter project.
 
+## firebase functions
+
+inside firebase-functions run `npm run deploy`
+use emulators `npm run serve`
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

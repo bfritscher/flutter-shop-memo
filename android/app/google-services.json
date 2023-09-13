@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:281865054216:android:a3f0c1fc9e17b1bcf889bd",
+        "android_client_info": {
+          "package_name": "com.example.gtk_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281865054216-ahga2je27ea0dlf7fdt061onkfutlart.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_dLmiHHHoDBvJDySI3uZDVrXf-JdVTsE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "281865054216-ahga2je27ea0dlf7fdt061onkfutlart.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "281865054216-eidk1u03c0j8nfudhttgki3kqh16vehm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.shopMemo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:281865054216:android:8575c8db8414e170f889bd",
         "android_client_info": {
           "package_name": "com.example.shop_memo"
