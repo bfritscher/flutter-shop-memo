@@ -7,6 +7,10 @@ A new Flutter project.
 inside firebase-functions run `npm run deploy`
 use emulators `npm run serve`
 
+## firebase storage cors
+https://firebase.google.com/docs/storage/web/download-files
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
