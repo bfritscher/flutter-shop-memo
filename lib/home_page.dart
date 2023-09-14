@@ -181,7 +181,7 @@ class StoriesList extends StatelessWidget {
 
                     return GestureDetector(
                         onTap: () {
-                          context.push('/snap/${items[index].id}',
+                          context.go('/snap/${items[index].id}',
                               extra: items[index]);
                         },
                         child: Hero(

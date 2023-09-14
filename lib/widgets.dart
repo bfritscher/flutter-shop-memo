@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PrimaryBlockButton extends StatelessWidget {
   final String text;
@@ -21,5 +22,26 @@ class PrimaryBlockButton extends StatelessWidget {
                 TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
       ),
     );
+  }
+}
+
+class Logo extends StatelessWidget {
+  const Logo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+                  color: Theme.of(context).colorScheme.primary,
+                  child: SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                          child: Text(
+                        'Snap!',
+                        style: GoogleFonts.anton(
+                          textStyle: Theme.of(context).textTheme.displayLarge,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ))),
+                );
   }
 }

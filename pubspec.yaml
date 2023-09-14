@@ -1,4 +1,4 @@
-name: shop_memo
+name: snap
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -49,6 +49,8 @@ dependencies:
   go_router: ^10.1.2
   google_fonts: ^5.1.0
   image_cropper: ^5.0.0
+  firebase_core_desktop: ^1.0.2
+  # missing firebase_auth_desktop but dependency broken
 
 dev_dependencies:
   flutter_test:

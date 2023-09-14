@@ -11,20 +11,25 @@ import 'firebase_options.dart';
 import 'take_snap.dart';
 import 'home_page.dart';
 import 'details_snap.dart';
+import 'widgets.dart';
+import 'dart:io' show Platform;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // Pass all uncaught "fatal" errors from the framework to Crashlytics
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
+  if (!kIsWeb && !Platform.isWindows) {
+      // Pass all uncaught "fatal" errors from the framework to Crashlytics
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  }
 
 
   // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
@@ -58,21 +63,8 @@ class MyApp extends StatelessWidget {
           path: '/login',
           builder: (context, state) {
             return SignInScreen(
-              headerBuilder: (context, constraints, shrinkOffset) {
-                return Container(
-                  color: Theme.of(context).colorScheme.primary,
-                  child: SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                          child: Text(
-                        'Snap!',
-                        style: GoogleFonts.anton(
-                          textStyle: Theme.of(context).textTheme.displayLarge,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      ))),
-                );
-              },
+              sideBuilder:(context, constraints) => const Logo(),
+              headerBuilder: (context, constraints, shrinkOffset) => const Logo(),
               actions: [
                 ForgotPasswordAction((context, email) {
                   final uri = Uri(
@@ -81,7 +73,7 @@ class MyApp extends StatelessWidget {
                       'email': email,
                     },
                   );
-                  context.push(uri.toString());
+                  context.go(uri.toString());
                 }),
                 AuthStateChangeAction<SignedIn>((context, state) {
                   if (!state.user!.emailVerified) {
@@ -206,8 +198,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Snap!',
       theme: ThemeData(
+        fontFamily: GoogleFonts.barlow().fontFamily,
         colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.blue, brightness: Brightness.light),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        fontFamily: GoogleFonts.barlow().fontFamily,
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Color.fromARGB(255, 7, 31, 50), brightness: Brightness.dark).copyWith(
+              primary: Color.fromARGB(255, 7, 31, 50),
+              onPrimary: const Color.fromARGB(255, 196, 196, 196)
+            ),
         useMaterial3: true,
       ),
       routerConfig: _router,

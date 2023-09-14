@@ -27,15 +27,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return linux;
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -56,7 +50,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB_dLmiHHHoDBvJDySI3uZDVrXf-JdVTsE',
-    appId: '1:281865054216:android:8575c8db8414e170f889bd',
+    appId: '1:281865054216:android:f21625d29dd4a859f889bd',
     messagingSenderId: '281865054216',
     projectId: 'firebase-ptw',
     databaseURL: 'https://ptw.firebaseio.com',
@@ -83,5 +77,27 @@ class DefaultFirebaseOptions {
     storageBucket: 'firebase-ptw.appspot.com',
     iosClientId: '281865054216-ut4ip07ghg3s803dq676h9sck6qao9j5.apps.googleusercontent.com',
     iosBundleId: 'com.example.shopMemo.RunnerTests',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDZt98CIUYUBPeW32wvtA5hWOFlSLp03C0',
+    appId: '1:281865054216:web:b3a99ae715f22279f889bd',
+    messagingSenderId: '281865054216',
+    projectId: 'firebase-ptw',
+    authDomain: 'ptw.firebaseapp.com',
+    databaseURL: 'https://ptw.firebaseio.com',
+    storageBucket: 'firebase-ptw.appspot.com',
+    measurementId: 'G-VM27B0H9QJ',
+  );
+
+  static const FirebaseOptions linux = FirebaseOptions(
+    apiKey: 'AIzaSyDZt98CIUYUBPeW32wvtA5hWOFlSLp03C0',
+    appId: '1:281865054216:web:b86e80dd1c10ed5df889bd',
+    messagingSenderId: '281865054216',
+    projectId: 'firebase-ptw',
+    authDomain: 'ptw.firebaseapp.com',
+    databaseURL: 'https://ptw.firebaseio.com',
+    storageBucket: 'firebase-ptw.appspot.com',
+    measurementId: 'G-HK1NQP05W7',
   );
 }

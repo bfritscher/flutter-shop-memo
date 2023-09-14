@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "shop_memo" "\0"
+            VALUE "FileDescription", "snap" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "shop_memo" "\0"
+            VALUE "InternalName", "snap" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "shop_memo.exe" "\0"
-            VALUE "ProductName", "shop_memo" "\0"
+            VALUE "OriginalFilename", "snap.exe" "\0"
+            VALUE "ProductName", "Snap!" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

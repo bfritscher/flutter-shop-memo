@@ -1,4 +1,4 @@
-# shop_memo
+# Flutter Snap!
 
 A new Flutter project.
 

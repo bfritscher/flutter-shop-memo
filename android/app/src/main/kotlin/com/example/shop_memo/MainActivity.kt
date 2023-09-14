@@ -1,4 +1,4 @@
-package com.example.shop_memo
+package com.example.snap
 
 import io.flutter.embedding.android.FlutterActivity
 

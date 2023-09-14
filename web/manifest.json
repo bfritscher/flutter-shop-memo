@@ -1,6 +1,6 @@
 {
-    "name": "shop_memo",
-    "short_name": "shop_memo",
+    "name": "snap",
+    "short_name": "snap",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

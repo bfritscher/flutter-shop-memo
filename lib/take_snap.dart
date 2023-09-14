@@ -145,13 +145,15 @@ class _TakeSnapState extends State<TakeSnap> {
     return Column(
       children: [
         if (_isUploading)
-          Stack(alignment: Alignment.center, children: [
-            kIsWeb
-                ? Image.network(_croppedImage!.path)
-                : Image.file(_croppedImage!),
-            const SizedBox(
-                height: 200, width: 200, child: CircularProgressIndicator()),
-          ]),
+          Expanded(
+            child: Stack(alignment: Alignment.center, children: [
+              kIsWeb
+                  ? Image.network(_croppedImage!.path)
+                  : Image.file(_croppedImage!),
+              const SizedBox(
+                  height: 200, width: 200, child: CircularProgressIndicator()),
+            ]),
+          ),
         if (!_isUploading && _croppedImage == null)
           PrimaryBlockButton(onPressed: getImage, text: "Snap!"),
         if (!_isUploading && _croppedImage != null) ...[
