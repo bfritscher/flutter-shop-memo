@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/foundation.dart';
 import 'widgets.dart';
 
 class TakeSnapScreen extends StatelessWidget {
@@ -31,7 +33,8 @@ class TakeSnap extends StatefulWidget {
 
 class _TakeSnapState extends State<TakeSnap> {
   final picker = ImagePicker();
-  File? _image;
+  File? _pickedImage;
+  File? _croppedImage;
   bool _isUploading = false;
 
   Future getImage() async {
@@ -39,12 +42,59 @@ class _TakeSnapState extends State<TakeSnap> {
 
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
+        _pickedImage = File(pickedFile.path);
+        _cropImage();
       } else {
         print('No image selected.');
-        _image = null;
+        _pickedImage = null;
       }
     });
+  }
+
+  Future<void> _cropImage() async {
+    if (_pickedImage != null) {
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: _pickedImage!.path,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 100,
+        maxHeight: 512,
+        maxWidth: 512,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+        ],
+        aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Theme.of(context).colorScheme.primary,
+            toolbarWidgetColor: Theme.of(context).colorScheme.onPrimary,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true,
+          ),
+          IOSUiSettings(
+            title: 'Cropper',
+          ),
+          WebUiSettings(
+            context: context,
+            presentStyle: CropperPresentStyle.dialog,
+            boundary: const CroppieBoundary(
+              width: 256,
+              height: 256,
+            ),
+            viewPort:
+                const CroppieViewPort(width: 256, height: 256, type: 'square'),
+            enableExif: false,
+            enableZoom: true,
+            showZoomer: true,
+          ),
+        ],
+      );
+      if (croppedFile != null) {
+        setState(() {
+          _croppedImage = File(croppedFile.path);
+        });
+      }
+    }
   }
 
   Future uploadImage() async {
@@ -56,7 +106,12 @@ class _TakeSnapState extends State<TakeSnap> {
     final Reference storageReference =
         FirebaseStorage.instance.ref().child(fileRef);
 
-    final UploadTask uploadTask = storageReference.putFile(_image!);
+    final UploadTask uploadTask = kIsWeb
+        ? storageReference.putData(
+            await _croppedImage!
+                .readAsBytes(), // Does not work on web as File is from io
+            SettableMetadata(contentType: 'image/jpeg'))
+        : storageReference.putFile(_croppedImage!);
 
     await uploadTask.whenComplete(() => null);
 
@@ -66,7 +121,8 @@ class _TakeSnapState extends State<TakeSnap> {
       'url': imageUrl,
       'fileRef': fileRef,
       'title': titleController.text,
-      'expireAt': DateTime.now().add(const Duration(minutes: 5)),
+      'processed': false,
+      'expireAt': DateTime.now().add(const Duration(hours: 24)),
       'createdAt': FieldValue.serverTimestamp(),
     });
 
@@ -90,14 +146,19 @@ class _TakeSnapState extends State<TakeSnap> {
       children: [
         if (_isUploading)
           Stack(alignment: Alignment.center, children: [
-            Image.file(_image!),
+            kIsWeb
+                ? Image.network(_croppedImage!.path)
+                : Image.file(_croppedImage!),
             const SizedBox(
                 height: 200, width: 200, child: CircularProgressIndicator()),
           ]),
-        if (!_isUploading && _image == null)
+        if (!_isUploading && _croppedImage == null)
           PrimaryBlockButton(onPressed: getImage, text: "Snap!"),
-        if (!_isUploading && _image != null) ...[
-          Expanded(child: Image.file(_image!)),
+        if (!_isUploading && _croppedImage != null) ...[
+          Expanded(
+              child: kIsWeb
+                  ? Image.network(_croppedImage!.path)
+                  : Image.file(_croppedImage!)),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
@@ -110,12 +171,14 @@ class _TakeSnapState extends State<TakeSnap> {
           ),
         ],
         PrimaryBlockButton(
-          onPressed: _image != null
+          onPressed: _croppedImage != null
               ? () async {
                   await uploadImage();
                   if (context.mounted) {
                     context.go('/');
-                    _image = null;
+                    titleController.text = '';
+                    _pickedImage = null;
+                    _croppedImage = null;
                   }
                 }
               : null,
