@@ -162,7 +162,7 @@ class MyApp extends StatelessWidget {
                 GoRoute(
                   path: '/',
                   builder: (BuildContext context, GoRouterState state) {
-                    return const MyHomePage(title: 'Snaps!');
+                    return const MyHomePage(title: 'Snap!');
                   },
                 ),
               ],
@@ -314,7 +314,7 @@ class ScaffoldBottomNavigationBar extends StatelessWidget {
 
     final navBar =  BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Snaps!'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Snap!'),
           BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: 'Take'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
@@ -325,7 +325,7 @@ class ScaffoldBottomNavigationBar extends StatelessWidget {
       );
 
     final navRail = NavigationRail(destinations: [
-      NavigationRailDestination(icon: Icon(Icons.home), label: Text('Snaps!')),
+      NavigationRailDestination(icon: Icon(Icons.home), label: Text('Snap!')),
       NavigationRailDestination(icon: Icon(Icons.camera_alt), label: Text('Take')),
       NavigationRailDestination(icon: Icon(Icons.person), label: Text('Profile')),
     ],
@@ -338,19 +338,21 @@ class ScaffoldBottomNavigationBar extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        if (constraints.maxWidth < 600) {
+        if (constraints.maxWidth < 800) {
          return Scaffold(
           body: navigationShell,
           bottomNavigationBar: navBar
         );
         }else {
-          return Scaffold(
-            body: Row(children: [
-              navRail,
-              const VerticalDivider(thickness: 1, width: 1),
-              Expanded(child: navigationShell),
-            
-            ],)
+          return SafeArea(
+            child: Scaffold(
+              body: Row(children: [
+                navRail,
+                const VerticalDivider(thickness: 1, width: 1),
+                Expanded(child: navigationShell),
+              
+              ],)
+            ),
           );
         }
       }

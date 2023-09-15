@@ -3,6 +3,13 @@
 A new Flutter project.
 
 
+## localization gen
+
+```
+flutter pub get
+flutter gen-l10n
+```
+
 ## app icons
 
 ```
