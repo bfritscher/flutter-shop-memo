@@ -144,6 +144,7 @@ class _TakeSnapState extends State<TakeSnap> {
   @override
   Widget build(BuildContext context) {
     final content = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (_isUploading)
           Expanded(
