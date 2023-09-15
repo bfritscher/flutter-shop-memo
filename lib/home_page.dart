@@ -188,7 +188,7 @@ class StoriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('snaps').snapshots(),
+        stream: FirebaseFirestore.instance.collection('snaps').orderBy('createdAt', descending: true).snapshots(),
         builder: (context, snapshot) {
           return Column(
             children: [

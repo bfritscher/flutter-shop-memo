@@ -7,6 +7,7 @@ import 'package:firebase_ui_oauth_oidc/firebase_ui_oauth_oidc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
@@ -17,12 +18,20 @@ import 'widgets.dart';
 import 'config.dart';
 import 'oidc_eduid.dart';
 import 'dart:io' show Platform;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'settings_provider.dart';
+import 'settings.dart';
+
+var settingsStateProvider = SettingsState();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await settingsStateProvider.init();
 
   if (!kIsWeb && !Platform.isWindows) {
     // Pass all uncaught "fatal" errors from the framework to Crashlytics
@@ -214,6 +223,11 @@ class MyApp extends StatelessWidget {
             return DetailSnapScreen(
                 id: state.pathParameters['id']!, data: state.extra);
           }),
+      GoRoute(
+          path: '/settings',
+          builder: (context, state) {
+            return  const SettingsScreen();
+          }),    
     ],
   );
 
@@ -226,42 +240,63 @@ class MyApp extends StatelessWidget {
             primary: const Color.fromARGB(255, 7, 31, 50),
             onPrimary: const Color.fromARGB(255, 196, 196, 196));
 
-    return MaterialApp.router(
-      title: 'Snap!',
-      theme: ThemeData(
-        fontFamily: GoogleFonts.barlow().fontFamily,
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue, brightness: Brightness.light),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        fontFamily: GoogleFonts.barlow().fontFamily,
-        colorScheme: darkScheme,
-        // fix auth ui in dark mode
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: ButtonStyle(
-            padding: MaterialStateProperty.all<EdgeInsets>(
-              const EdgeInsets.all(16),
+    return ChangeNotifierProvider(
+      create: (context) => settingsStateProvider,
+      // need to use builder to get a context which is below the provider
+      child: Builder(
+        builder: (context) {    
+          final settings = context.watch<SettingsState>();
+          return MaterialApp.router(
+            title: 'Snap!',
+            locale: settings.locale,
+            localizationsDelegates: const [
+              AppLocalizations.delegate, // Add this line
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('fr'),
+            ],
+            theme: ThemeData(
+              fontFamily: GoogleFonts.barlow().fontFamily,
+              colorScheme: ColorScheme.fromSeed(
+                  seedColor: Colors.blue, brightness: Brightness.light),
+              useMaterial3: true,
             ),
-            shape: MaterialStateProperty.all<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+            darkTheme: ThemeData(
+              fontFamily: GoogleFonts.barlow().fontFamily,
+              colorScheme: darkScheme,
+              // fix auth ui in dark mode
+              inputDecorationTheme: InputDecorationTheme(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
+              outlinedButtonTheme: OutlinedButtonThemeData(
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all<EdgeInsets>(
+                    const EdgeInsets.all(16),
+                  ),
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(darkScheme.primary),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(darkScheme.onPrimary),
+                ),
+              ),
+              useMaterial3: true,
             ),
-            backgroundColor:
-                MaterialStateProperty.all<Color>(darkScheme.primary),
-            foregroundColor:
-                MaterialStateProperty.all<Color>(darkScheme.onPrimary),
-          ),
-        ),
-        useMaterial3: true,
+            themeMode: settings.themeMode,
+            routerConfig: _router,
+          );
+        }
       ),
-      routerConfig: _router,
     );
   }
 }
@@ -276,9 +311,8 @@ class ScaffoldBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: navigationShell,
-      bottomNavigationBar: BottomNavigationBar(
+
+    final navBar =  BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Snaps!'),
           BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: 'Take'),
@@ -288,7 +322,38 @@ class ScaffoldBottomNavigationBar extends StatelessWidget {
         onTap: (int tappedIndex) {
           navigationShell.goBranch(tappedIndex);
         },
-      ),
+      );
+
+    final navRail = NavigationRail(destinations: [
+      NavigationRailDestination(icon: Icon(Icons.home), label: Text('Snaps!')),
+      NavigationRailDestination(icon: Icon(Icons.camera_alt), label: Text('Take')),
+      NavigationRailDestination(icon: Icon(Icons.person), label: Text('Profile')),
+    ],
+    labelType: NavigationRailLabelType.all,
+    selectedIndex: navigationShell.currentIndex,
+    onDestinationSelected: (int index) {
+      navigationShell.goBranch(index);
+    },
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 600) {
+         return Scaffold(
+          body: navigationShell,
+          bottomNavigationBar: navBar
+        );
+        }else {
+          return Scaffold(
+            body: Row(children: [
+              navRail,
+              const VerticalDivider(thickness: 1, width: 1),
+              Expanded(child: navigationShell),
+            
+            ],)
+          );
+        }
+      }
     );
   }
 }
