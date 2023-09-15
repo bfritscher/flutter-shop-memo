@@ -19,7 +19,7 @@ class PrimaryBlockButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(text,
             style:
-                TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+                GoogleFonts.anton(color: Theme.of(context).colorScheme.onPrimary)),
       ),
     );
   }

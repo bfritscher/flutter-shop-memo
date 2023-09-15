@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -142,7 +143,7 @@ class _TakeSnapState extends State<TakeSnap> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final content = Column(
       children: [
         if (_isUploading)
           Expanded(
@@ -187,6 +188,19 @@ class _TakeSnapState extends State<TakeSnap> {
           text: 'Upload',
         )
       ],
+    );
+
+    return Center(
+      child: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth > 500) {
+          return ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: content,
+          );
+        } else {
+          return content;
+        }
+      }),
     );
   }
 }

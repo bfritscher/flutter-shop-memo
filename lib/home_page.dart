@@ -42,9 +42,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     await remoteConfig.fetchAndActivate();
     setState(() {
-        _showBanner = remoteConfig.getBool("show_banner");
-        _bannerText = remoteConfig.getString("banner_text");
-      });
+      _showBanner = remoteConfig.getBool("show_banner");
+      _bannerText = remoteConfig.getString("banner_text");
+    });
     print("Remote config listener");
     remoteConfig.onConfigUpdated.listen((event) async {
       print("Remote config updated");
@@ -53,8 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _showBanner = remoteConfig.getBool("show_banner");
         _bannerText = remoteConfig.getString("banner_text");
       });
-    },
-        onError: (error) => print("Remote config error: ${error.toString()}"));
+    }, onError: (error) => print("Remote config error: ${error.toString()}"));
   }
 
   @override
@@ -63,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     initRemoteConfig();
   }
 
-  void _incrementCounter() {
+  void _incrementCounter(context) {
     FirebaseAnalytics.instance
         .logEvent(name: 'counter_incremented', parameters: null);
     setState(() {
@@ -74,6 +73,18 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+          content:
+              Text('You have pushed the button this many times: $_counter'),
+          actions: [
+            TextButton(
+              child: const Text('Dismiss'),
+              onPressed: () =>
+                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
+            ),
+          ]),
+    );
   }
 
   @override
@@ -86,15 +97,45 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title,
-            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
-      ),
+          // TRY THIS: Try changing the color here to a specific color (to
+          // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+          // change color while the other colors stay the same.
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title,
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+          actions: [
+            MenuAnchor(
+              builder: (context, controller, child) {
+                return IconButton(
+                  icon: const Icon(Icons.more_vert),
+                  style: ButtonStyle(
+                    foregroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).colorScheme.onPrimary),
+                  ),
+                  tooltip: 'Show menu',
+                  onPressed: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                );
+              },
+              menuChildren: [
+                MenuItemButton(
+                  onPressed: () => _incrementCounter(context),
+                  child: const Text("Increment Counter"),
+                ),
+                MenuItemButton(
+                  onPressed: () => throw Exception('Test Exception!'),
+                  child: const Text("Throw Test Exception"),
+                ),
+              ],
+            ),
+          ]),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -133,24 +174,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             const Expanded(child: StoriesList()),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            TextButton(
-              onPressed: () => throw Exception(),
-              child: const Text("Throw Test Exception"),
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
