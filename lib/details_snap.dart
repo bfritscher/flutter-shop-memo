@@ -28,6 +28,7 @@ class DetailSnapScreen extends StatelessWidget {
           builder: (context, snapshot) {
             var data = snapshot.data ?? this.data;
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
                   color: Theme.of(context).colorScheme.primary,
@@ -35,26 +36,26 @@ class DetailSnapScreen extends StatelessWidget {
                     width: double.infinity,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        data?.get('title') ?? '',
-                        style: GoogleFonts.anton(
-                          textStyle: Theme.of(context).textTheme.displayLarge,
-                          color: Theme.of(context).colorScheme.onPrimary,
+                      child: Center(
+                        child: Text(
+                          data?.get('title') ?? '',
+                          style: GoogleFonts.anton(
+                            textStyle: Theme.of(context).textTheme.displayLarge,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
                 Expanded(
-                  child: Center(
-                    child: Hero(
-                        tag: id,
-                        child: data != null
-                            ? AnimatedContainerDemo(
-                                child: Image.network(data.get('url'),
-                                    fit: BoxFit.contain))
-                            : const Placeholder()),
-                  ),
+                  child: Hero(
+                      tag: id,
+                      child: data != null
+                          ? AnimatedContainerDemo(
+                              child: Image.network(data.get('url'),
+                                  fit: BoxFit.contain))
+                          : Container()),
                 )
               ],
             );
@@ -117,15 +118,20 @@ class _AnimatedContainerDemoState extends State<AnimatedContainerDemo> {
         ),
         duration: _duration,
         curve: Curves.easeInOut,
-        child: AnimatedContainer(
-          margin: EdgeInsets.all(margin),
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(borderRadius),
-          ),
-          duration: _duration,
-          curve: Curves.easeInOut,
-          child: widget.child,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedContainer(
+              margin: EdgeInsets.all(margin),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(borderRadius),
+              ),
+              duration: _duration,
+              curve: Curves.easeInOut,
+              child: widget.child,
+            ),
+          ],
         ),
       ),
     );

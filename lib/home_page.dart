@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:math' show max;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -192,37 +193,41 @@ class StoriesList extends StatelessWidget {
           return Column(
             children: [
               Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisSpacing: 0,
-                    mainAxisSpacing: 0,
-                    crossAxisCount: 3,
-                  ),
-                  itemCount:
-                      snapshot.data == null ? 0 : snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    final items =
-                        snapshot.data == null ? [] : snapshot.data!.docs;
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisSpacing: 0,
+                        mainAxisSpacing: 0,
+                        crossAxisCount: max(constraints.maxWidth ~/ 340, 2),
+                      ),
+                      itemCount:
+                          snapshot.data == null ? 0 : snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        final items =
+                            snapshot.data == null ? [] : snapshot.data!.docs;
 
-                    return GestureDetector(
-                        onTap: () {
-                          context.go('/snap/${items[index].id}',
-                              extra: items[index]);
-                        },
-                        child: Hero(
-                          tag: items[index].id,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(
-                                  items[index].get('url'),
+                        return GestureDetector(
+                            onTap: () {
+                              context.go('/snap/${items[index].id}',
+                                  extra: items[index]);
+                            },
+                            child: Hero(
+                              tag: items[index].id,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                      items[index].get('url'),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ));
-                  },
+                            ));
+                      },
+                    );
+                  }
                 ),
               ),
             ],

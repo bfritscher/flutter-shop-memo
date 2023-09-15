@@ -51,6 +51,8 @@ dependencies:
   image_cropper: ^5.0.0
   firebase_core_desktop: ^1.0.2
   flutter_launcher_icons: ^0.13.1
+  firebase_ui_oauth_google: ^1.2.11
+  firebase_ui_oauth_oidc: ^0.2.5
   # missing firebase_auth_desktop but dependency broken
 
 dev_dependencies:

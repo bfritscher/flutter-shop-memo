@@ -2,6 +2,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:firebase_ui_oauth_oidc/firebase_ui_oauth_oidc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,6 +14,8 @@ import 'take_snap.dart';
 import 'home_page.dart';
 import 'details_snap.dart';
 import 'widgets.dart';
+import 'config.dart';
+import 'oidc_eduid.dart';
 import 'dart:io' show Platform;
 
 void main() async {
@@ -21,7 +25,7 @@ void main() async {
   );
 
   if (!kIsWeb && !Platform.isWindows) {
-      // Pass all uncaught "fatal" errors from the framework to Crashlytics
+    // Pass all uncaught "fatal" errors from the framework to Crashlytics
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
     // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
     PlatformDispatcher.instance.onError = (error, stack) {
@@ -31,10 +35,12 @@ void main() async {
     FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   }
 
-
   // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   FirebaseUIAuth.configureProviders([
+    GoogleProvider(clientId: GOOGLE_CLIENT_ID),
+    OidcProvider(providerId: 'oidc.eduid', style: const EduidButtonStyle()),
     EmailAuthProvider(),
+
     // ... other providers
   ]);
 
@@ -63,8 +69,9 @@ class MyApp extends StatelessWidget {
           path: '/login',
           builder: (context, state) {
             return SignInScreen(
-              sideBuilder:(context, constraints) => const Logo(),
-              headerBuilder: (context, constraints, shrinkOffset) => const Logo(),
+              sideBuilder: (context, constraints) => const Logo(),
+              headerBuilder: (context, constraints, shrinkOffset) =>
+                  const Logo(),
               actions: [
                 ForgotPasswordAction((context, email) {
                   final uri = Uri(
@@ -179,6 +186,22 @@ class MyApp extends StatelessWidget {
                           context.go('/');
                         }),
                       ],
+                      children: [
+                        // spacing trick
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                          ),
+                          onPressed: () => context.go('/settings'),
+                          child: Text(
+                            "Settings",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary),
+                          ),
+                        )
+                      ],
                     );
                   },
                 ),
@@ -188,13 +211,21 @@ class MyApp extends StatelessWidget {
       GoRoute(
           path: '/snap/:id',
           builder: (context, state) {
-            return DetailSnapScreen(id: state.pathParameters['id']!, data: state.extra);
+            return DetailSnapScreen(
+                id: state.pathParameters['id']!, data: state.extra);
           }),
     ],
   );
 
   @override
   Widget build(BuildContext context) {
+    final darkScheme = ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 7, 31, 50),
+            brightness: Brightness.dark)
+        .copyWith(
+            primary: const Color.fromARGB(255, 7, 31, 50),
+            onPrimary: const Color.fromARGB(255, 196, 196, 196));
+
     return MaterialApp.router(
       title: 'Snap!',
       theme: ThemeData(
@@ -205,11 +236,29 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         fontFamily: GoogleFonts.barlow().fontFamily,
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Color.fromARGB(255, 7, 31, 50), brightness: Brightness.dark).copyWith(
-              primary: Color.fromARGB(255, 7, 31, 50),
-              onPrimary: const Color.fromARGB(255, 196, 196, 196)
+        colorScheme: darkScheme,
+        // fix auth ui in dark mode
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.all(16),
             ),
+            shape: MaterialStateProperty.all<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            backgroundColor:
+                MaterialStateProperty.all<Color>(darkScheme.primary),
+            foregroundColor:
+                MaterialStateProperty.all<Color>(darkScheme.onPrimary),
+          ),
+        ),
         useMaterial3: true,
       ),
       routerConfig: _router,
