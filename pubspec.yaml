@@ -50,6 +50,7 @@ dependencies:
   google_fonts: ^5.1.0
   image_cropper: ^5.0.0
   firebase_core_desktop: ^1.0.2
+  flutter_launcher_icons: ^0.13.1
   # missing firebase_auth_desktop but dependency broken
 
 dev_dependencies:
@@ -108,3 +109,26 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons:
+  android: true # can specify file name here e.g. "ic_launcher"
+  image_path_android: "assets/images/icon-710x599-android.png"
+  adaptive_icon_background: "#0061a4" # only available for Android 8.0 devices and above
+  adaptive_icon_foreground: "assets/images/icon-foreground-432x432.png" # only available for Android 8.0 devices and above
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  ios: true # can specify file name here e.g. "My-Launcher-Icon"
+  remove_alpha_ios: true
+  image_path_ios: "assets/images/icon-1024x1024.png"
+  background_color_ios: "#0061a4"
+  web:
+    generate: true
+    image_path: "assets/images/icon-1024x1024.png"
+    background_color: "#0061a4"
+    theme_color: "#0061a4"
+  windows:
+    generate: true
+    image_path: "assets/images/icon-1024x1024.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/images/icon-1024x1024.png"

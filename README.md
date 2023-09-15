@@ -2,6 +2,14 @@
 
 A new Flutter project.
 
+
+## app icons
+
+```
+flutter pub run flutter_launcher_icons
+```
+
+
 ## firebase functions
 
 inside firebase-functions run `npm run deploy`
