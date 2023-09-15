@@ -9,6 +9,13 @@ A new Flutter project.
 flutter pub run flutter_launcher_icons
 ```
 
+## android build
+
+```
+flutter build appbundle  --build-name "1.0" --build-number 1
+flutter install
+```
+
 
 ## firebase functions
 

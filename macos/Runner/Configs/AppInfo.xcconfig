@@ -8,7 +8,7 @@
 PRODUCT_NAME = snap
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.shopMemo
+PRODUCT_BUNDLE_IDENTIFIER = ch.fritscher.snap
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2023 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2023 ch.fritscher. All rights reserved.

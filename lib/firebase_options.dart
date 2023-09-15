@@ -65,7 +65,7 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://ptw.firebaseio.com',
     storageBucket: 'firebase-ptw.appspot.com',
     iosClientId: '281865054216-eidk1u03c0j8nfudhttgki3kqh16vehm.apps.googleusercontent.com',
-    iosBundleId: 'com.example.shopMemo',
+    iosBundleId: 'ch.fritscher.snap',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -76,7 +76,7 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://ptw.firebaseio.com',
     storageBucket: 'firebase-ptw.appspot.com',
     iosClientId: '281865054216-ut4ip07ghg3s803dq676h9sck6qao9j5.apps.googleusercontent.com',
-    iosBundleId: 'com.example.shopMemo.RunnerTests',
+    iosBundleId: 'ch.fritscher.snap.RunnerTests',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
