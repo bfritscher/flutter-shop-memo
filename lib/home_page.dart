@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
+import 'loading.dart';
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -210,25 +212,28 @@ class StoriesList extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final items =
                           snapshot.data == null ? [] : snapshot.data!.docs;
-
-                      return GestureDetector(
-                          onTap: () {
-                            context.go('/snap/${items[index].id}',
-                                extra: items[index]);
-                          },
-                          child: Hero(
-                            tag: items[index].id,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(
-                                    items[index].get('url'),
+                      final item = items[index];
+                      if (item.get('processed')) {
+                        return GestureDetector(
+                            onTap: () {
+                              context.go('/snap/${item.id}', extra: item);
+                            },
+                            child: Hero(
+                              tag: item.id,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(
+                                      item.get('url'),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ));
+                            ));
+                      } else {
+                        return const LoadingAnimation();
+                      }
                     },
                   );
                 }),

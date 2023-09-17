@@ -303,9 +303,9 @@ class MyApp extends StatelessWidget {
 
 class ScaffoldBottomNavigationBar extends StatelessWidget {
   const ScaffoldBottomNavigationBar({
+    super.key,
     required this.navigationShell,
-    Key? key,
-  }) : super(key: key ?? const ValueKey<String>('ScaffoldBottomNavigationBar'));
+  });
 
   final StatefulNavigationShell navigationShell;
 
