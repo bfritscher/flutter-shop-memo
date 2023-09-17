@@ -59,6 +59,7 @@ dependencies:
   intl: any
   provider: ^6.0.5
   shared_preferences: ^2.2.1
+  firebase_ui_localizations: ^1.6.1
   # missing firebase_auth_desktop but dependency broken
 
 dev_dependencies:

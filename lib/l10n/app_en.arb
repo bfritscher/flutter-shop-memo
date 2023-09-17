@@ -1,11 +1,10 @@
 {
     "@@locale": "en",
-    "checkout": "Checkout",
-    "@checkout": {
-        "description": "Checkout button text"
-    },
-    "scan": "Scan",
-    "nItems": "{count, plural, =0{no items} =1{1 item} other{{count} items}}",
+    "take": "Take",
+    "account": "Account",
+    "send": "Send",
+    "increment": "Increment Counter",
+    "nItems": "{count, plural, =0{Never pushed} =1{Pushed once} other{Pushed {count} times}}",
     "@nItems": {
         "description": "Number of items in cart",
         "placeholders": {
@@ -15,8 +14,6 @@
             }
         }
     },
-    "emptyCart": "Your basket is empty",
-    "emptyCartStartScanning": "Start your shopping trip by scanning a product.",
     "language": "Language",
     "settings": "Settings",
     "selectLocale": "{choice, select, fr {Français} en {English} other {}}",
@@ -28,13 +25,7 @@
             }
         }
     },
-    "cart": "Cart",
-    "clearCart": "Clear Cart",
     "cancel": "Cancel",
-    "clearCartConfirm": "Are you sure you want to clear your cart?",
-    "clear": "Clear",
-    "product_not_found": "Product not found!",
-    "no_code": "No code",
     "ok": "Ok",
     "common": "Common",
     "theme": "Theme",
@@ -47,22 +38,5 @@
             }
         }
     },
-    "printer": "Printer",
-    "advanced": "Advanced",
-    "updateProductCache": "Update product cache",
-    "nbOrders": "Number of orders",
-    "selectValue": "Select the value you want",
-    "cardInvalid": "Card {id} invalid",
-    "@cardInvalid": {
-        "description": "Card invalid id",
-        "placeholders": {
-            "id": {
-                "type": "String"
-            }
-        }
-    },
-    "printReceipt": "Print receipt",
-    "print": "Print",
-    "noReceipt": "No receipt",
-    "errorPrinting": "Error printing"
+        "selectValue": "Select the value you want"
 }

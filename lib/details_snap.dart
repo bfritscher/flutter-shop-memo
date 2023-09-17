@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:go_router/go_router.dart';
 import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DetailSnapScreen extends StatelessWidget {
   final String id;
@@ -38,7 +39,7 @@ class DetailSnapScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Center(
                         child: Text(
-                          data?.get('title') ?? '',
+                          data?.get('title').toString() ?? '',
                           style: GoogleFonts.anton(
                             textStyle: Theme.of(context).textTheme.displayLarge,
                             color: Theme.of(context).colorScheme.onPrimary,
@@ -53,7 +54,7 @@ class DetailSnapScreen extends StatelessWidget {
                       tag: id,
                       child: data != null
                           ? AnimatedContainerDemo(
-                              child: Image.network(data.get('url'),
+                              child: Image.network(data.get('url').toString(),
                                   fit: BoxFit.contain))
                           : Container()),
                 )

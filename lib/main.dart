@@ -1,28 +1,30 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'dart:io' show Platform;
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:firebase_ui_oauth_oidc/firebase_ui_oauth_oidc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/rendering.dart';
-import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'firebase_options.dart';
-import 'take_snap.dart';
-import 'home_page.dart';
-import 'details_snap.dart';
-import 'widgets.dart';
-import 'config.dart';
-import 'oidc_eduid.dart';
-import 'dart:io' show Platform;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'settings_provider.dart';
+
+import 'config.dart';
+import 'details_snap.dart';
+import 'firebase_options.dart';
+import 'home_page.dart';
+import 'oidc_eduid.dart';
 import 'settings.dart';
+import 'settings_provider.dart';
+import 'take_snap.dart';
+import 'widgets.dart';
 
 var settingsStateProvider = SettingsState();
 
@@ -150,8 +152,7 @@ class MyApp extends StatelessWidget {
         },
       ),
       StatefulShellRoute.indexedStack(
-          builder: (BuildContext context, GoRouterState state,
-              StatefulNavigationShell navigationShell) {
+          builder: (context, state, navigationShell) {
             return ScaffoldBottomNavigationBar(
               navigationShell: navigationShell,
             );
@@ -161,7 +162,7 @@ class MyApp extends StatelessWidget {
               routes: <RouteBase>[
                 GoRoute(
                   path: '/',
-                  builder: (BuildContext context, GoRouterState state) {
+                  builder: (context, state) {
                     return const MyHomePage(title: 'Snap!');
                   },
                 ),
@@ -171,7 +172,7 @@ class MyApp extends StatelessWidget {
               routes: <RouteBase>[
                 GoRoute(
                   path: '/snap',
-                  builder: (BuildContext context, GoRouterState state) {
+                  builder: (context, state) {
                     return const TakeSnapScreen();
                   },
                 ),
@@ -181,11 +182,11 @@ class MyApp extends StatelessWidget {
               routes: <RouteBase>[
                 GoRoute(
                   path: '/profile',
-                  builder: (BuildContext context, GoRouterState state) {
+                  builder: (context, state) {
                     return ProfileScreen(
                       appBar: AppBar(
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        title: Text("Profile",
+                        title: Text(AppLocalizations.of(context)!.account,
                             style: TextStyle(
                                 color:
                                     Theme.of(context).colorScheme.onPrimary)),
@@ -205,7 +206,7 @@ class MyApp extends StatelessWidget {
                           ),
                           onPressed: () => context.go('/settings'),
                           child: Text(
-                            "Settings",
+                            AppLocalizations.of(context)!.settings,
                             style: TextStyle(
                                 color: Theme.of(context).colorScheme.onPrimary),
                           ),
@@ -226,8 +227,8 @@ class MyApp extends StatelessWidget {
       GoRoute(
           path: '/settings',
           builder: (context, state) {
-            return  const SettingsScreen();
-          }),    
+            return const SettingsScreen();
+          }),
     ],
   );
 
@@ -243,60 +244,59 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => settingsStateProvider,
       // need to use builder to get a context which is below the provider
-      child: Builder(
-        builder: (context) {    
-          final settings = context.watch<SettingsState>();
-          return MaterialApp.router(
-            title: 'Snap!',
-            locale: settings.locale,
-            localizationsDelegates: const [
-              AppLocalizations.delegate, // Add this line
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('en'),
-              Locale('fr'),
-            ],
-            theme: ThemeData(
-              fontFamily: GoogleFonts.barlow().fontFamily,
-              colorScheme: ColorScheme.fromSeed(
-                  seedColor: Colors.blue, brightness: Brightness.light),
-              useMaterial3: true,
-            ),
-            darkTheme: ThemeData(
-              fontFamily: GoogleFonts.barlow().fontFamily,
-              colorScheme: darkScheme,
-              // fix auth ui in dark mode
-              inputDecorationTheme: InputDecorationTheme(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+      child: Builder(builder: (context) {
+        final settings = context.watch<SettingsState>();
+        return MaterialApp.router(
+          title: 'Snap!',
+          locale: settings.locale,
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            FirebaseUILocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('fr'),
+          ],
+          theme: ThemeData(
+            fontFamily: GoogleFonts.barlow().fontFamily,
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.blue, brightness: Brightness.light),
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            fontFamily: GoogleFonts.barlow().fontFamily,
+            colorScheme: darkScheme,
+            // fix auth ui in dark mode
+            inputDecorationTheme: InputDecorationTheme(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-              outlinedButtonTheme: OutlinedButtonThemeData(
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all<EdgeInsets>(
-                    const EdgeInsets.all(16),
-                  ),
-                  shape: MaterialStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(darkScheme.primary),
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(darkScheme.onPrimary),
-                ),
-              ),
-              useMaterial3: true,
             ),
-            themeMode: settings.themeMode,
-            routerConfig: _router,
-          );
-        }
-      ),
+            outlinedButtonTheme: OutlinedButtonThemeData(
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsets>(
+                  const EdgeInsets.all(16),
+                ),
+                shape: MaterialStateProperty.all<OutlinedBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(darkScheme.primary),
+                foregroundColor:
+                    MaterialStateProperty.all<Color>(darkScheme.onPrimary),
+              ),
+            ),
+            useMaterial3: true,
+          ),
+          themeMode: settings.themeMode,
+          routerConfig: _router,
+        );
+      }),
     );
   }
 }
@@ -311,51 +311,55 @@ class ScaffoldBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final navBar =  BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Snap!'),
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt), label: 'Take'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
-        currentIndex: navigationShell.currentIndex,
-        onTap: (int tappedIndex) {
-          navigationShell.goBranch(tappedIndex);
-        },
-      );
-
-    final navRail = NavigationRail(destinations: [
-      NavigationRailDestination(icon: Icon(Icons.home), label: Text('Snap!')),
-      NavigationRailDestination(icon: Icon(Icons.camera_alt), label: Text('Take')),
-      NavigationRailDestination(icon: Icon(Icons.person), label: Text('Profile')),
-    ],
-    labelType: NavigationRailLabelType.all,
-    selectedIndex: navigationShell.currentIndex,
-    onDestinationSelected: (int index) {
-      navigationShell.goBranch(index);
-    },
+    final navBar = BottomNavigationBar(
+      items: <BottomNavigationBarItem>[
+        const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Snap!'),
+        BottomNavigationBarItem(
+            icon: const Icon(Icons.camera_alt),
+            label: AppLocalizations.of(context)!.take),
+        BottomNavigationBarItem(
+            icon: const Icon(Icons.person),
+            label: AppLocalizations.of(context)!.account),
+      ],
+      currentIndex: navigationShell.currentIndex,
+      onTap: (tappedIndex) {
+        navigationShell.goBranch(tappedIndex);
+      },
     );
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 800) {
-         return Scaffold(
-          body: navigationShell,
-          bottomNavigationBar: navBar
+    final navRail = NavigationRail(
+      destinations: [
+        const NavigationRailDestination(
+            icon: Icon(Icons.home), label: Text('Snap!')),
+        NavigationRailDestination(
+            icon: const Icon(Icons.camera_alt),
+            label: Text(AppLocalizations.of(context)!.take)),
+        NavigationRailDestination(
+            icon: const Icon(Icons.person),
+            label: Text(AppLocalizations.of(context)!.account)),
+      ],
+      labelType: NavigationRailLabelType.all,
+      selectedIndex: navigationShell.currentIndex,
+      onDestinationSelected: (index) {
+        navigationShell.goBranch(index);
+      },
+    );
+
+    return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth < 800) {
+        return Scaffold(body: navigationShell, bottomNavigationBar: navBar);
+      } else {
+        return SafeArea(
+          child: Scaffold(
+              body: Row(
+            children: [
+              navRail,
+              const VerticalDivider(thickness: 1, width: 1),
+              Expanded(child: navigationShell),
+            ],
+          )),
         );
-        }else {
-          return SafeArea(
-            child: Scaffold(
-              body: Row(children: [
-                navRail,
-                const VerticalDivider(thickness: 1, width: 1),
-                Expanded(child: navigationShell),
-              
-              ],)
-            ),
-          );
-        }
       }
-    );
+    });
   }
 }

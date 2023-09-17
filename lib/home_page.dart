@@ -1,9 +1,12 @@
+import 'dart:math' show max;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/material.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:math' show max;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -29,32 +32,32 @@ class _MyHomePageState extends State<MyHomePage> {
   final remoteConfig = FirebaseRemoteConfig.instance;
 
   bool _showBanner = false;
-  String _bannerText = "";
+  String _bannerText = '';
 
-  void initRemoteConfig() async {
-    print("Remote config init");
+  Future<void> initRemoteConfig() async {
+    print('Remote config init');
     await remoteConfig.setConfigSettings(RemoteConfigSettings(
       fetchTimeout: const Duration(minutes: 1),
       minimumFetchInterval: const Duration(hours: 1),
     ));
     await remoteConfig.setDefaults(const {
-      "show_banner": false,
-      "banner_text": "",
+      'show_banner': false,
+      'banner_text': '',
     });
     await remoteConfig.fetchAndActivate();
     setState(() {
-      _showBanner = remoteConfig.getBool("show_banner");
-      _bannerText = remoteConfig.getString("banner_text");
+      _showBanner = remoteConfig.getBool('show_banner');
+      _bannerText = remoteConfig.getString('banner_text');
     });
-    print("Remote config listener");
+    print('Remote config listener');
     remoteConfig.onConfigUpdated.listen((event) async {
-      print("Remote config updated");
+      print('Remote config updated');
       await remoteConfig.activate();
       setState(() {
-        _showBanner = remoteConfig.getBool("show_banner");
-        _bannerText = remoteConfig.getString("banner_text");
+        _showBanner = remoteConfig.getBool('show_banner');
+        _bannerText = remoteConfig.getString('banner_text');
       });
-    }, onError: (error) => print("Remote config error: ${error.toString()}"));
+    }, onError: (error) => print('Remote config error: ${error.toString()}'));
   }
 
   @override
@@ -76,11 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
-          content:
-              Text('You have pushed the button this many times: $_counter'),
+          content: Text(AppLocalizations.of(context)!.nItems(_counter)),
           actions: [
             TextButton(
-              child: const Text('Dismiss'),
+              child: Text(AppLocalizations.of(context)!.ok),
               onPressed: () =>
                   ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
             ),
@@ -128,11 +130,11 @@ class _MyHomePageState extends State<MyHomePage> {
               menuChildren: [
                 MenuItemButton(
                   onPressed: () => _incrementCounter(context),
-                  child: const Text("Increment Counter"),
+                  child: Text(AppLocalizations.of(context)!.increment),
                 ),
                 MenuItemButton(
                   onPressed: () => throw Exception('Test Exception!'),
-                  child: const Text("Throw Test Exception"),
+                  child: const Text('Throw Test Exception'),
                 ),
               ],
             ),
@@ -188,47 +190,48 @@ class StoriesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: FirebaseFirestore.instance.collection('snaps').orderBy('createdAt', descending: true).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('snaps')
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           return Column(
             children: [
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisSpacing: 0,
-                        mainAxisSpacing: 0,
-                        crossAxisCount: max(constraints.maxWidth ~/ 340, 2),
-                      ),
-                      itemCount:
-                          snapshot.data == null ? 0 : snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        final items =
-                            snapshot.data == null ? [] : snapshot.data!.docs;
+                child: LayoutBuilder(builder: (context, constraints) {
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisSpacing: 0,
+                      mainAxisSpacing: 0,
+                      crossAxisCount: max(constraints.maxWidth ~/ 340, 2),
+                    ),
+                    itemCount:
+                        snapshot.data == null ? 0 : snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      final items =
+                          snapshot.data == null ? [] : snapshot.data!.docs;
 
-                        return GestureDetector(
-                            onTap: () {
-                              context.go('/snap/${items[index].id}',
-                                  extra: items[index]);
-                            },
-                            child: Hero(
-                              tag: items[index].id,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(
-                                      items[index].get('url'),
-                                    ),
+                      return GestureDetector(
+                          onTap: () {
+                            context.go('/snap/${items[index].id}',
+                                extra: items[index]);
+                          },
+                          child: Hero(
+                            tag: items[index].id,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    items[index].get('url'),
                                   ),
                                 ),
                               ),
-                            ));
-                      },
-                    );
-                  }
-                ),
+                            ),
+                          ));
+                    },
+                  );
+                }),
               ),
             ],
           );

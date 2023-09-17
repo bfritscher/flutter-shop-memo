@@ -1,23 +1,25 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:go_router/go_router.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'widgets.dart';
 
 class TakeSnapScreen extends StatelessWidget {
-  const TakeSnapScreen({Key? key}) : super(key: key);
+  const TakeSnapScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text("Take Snap",
+        title: Text('${AppLocalizations.of(context)!.take} Snap!',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
       ),
       body: const TakeSnap(),
@@ -26,7 +28,7 @@ class TakeSnapScreen extends StatelessWidget {
 }
 
 class TakeSnap extends StatefulWidget {
-  const TakeSnap({Key? key}) : super(key: key);
+  const TakeSnap({super.key});
 
   @override
   State<TakeSnap> createState() => _TakeSnapState();
@@ -118,7 +120,7 @@ class _TakeSnapState extends State<TakeSnap> {
 
     final imageUrl = await storageReference.getDownloadURL();
 
-    FirebaseFirestore.instance.collection('snaps').add({
+    await FirebaseFirestore.instance.collection('snaps').add({
       'url': imageUrl,
       'fileRef': fileRef,
       'title': titleController.text,
@@ -157,7 +159,7 @@ class _TakeSnapState extends State<TakeSnap> {
             ]),
           ),
         if (!_isUploading && _croppedImage == null)
-          PrimaryBlockButton(onPressed: getImage, text: "Snap!"),
+          PrimaryBlockButton(onPressed: getImage, text: 'Snap!'),
         if (!_isUploading && _croppedImage != null) ...[
           Expanded(
               child: kIsWeb
@@ -166,6 +168,7 @@ class _TakeSnapState extends State<TakeSnap> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
+              autofocus: true,
               controller: titleController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
@@ -186,7 +189,7 @@ class _TakeSnapState extends State<TakeSnap> {
                   }
                 }
               : null,
-          text: 'Upload',
+          text: AppLocalizations.of(context)!.send,
         )
       ],
     );
