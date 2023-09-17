@@ -2,6 +2,7 @@ import 'dart:io' show Platform;
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
@@ -45,6 +46,7 @@ void main() async {
     };
     FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   }
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   FirebaseUIAuth.configureProviders([
@@ -63,6 +65,9 @@ class MyApp extends StatelessWidget {
 
 // GoRouter configuration
   final _router = GoRouter(
+    observers: [
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+    ],
     redirect: (context, state) {
       final auth = FirebaseAuth.instance;
       if (auth.currentUser == null) {
@@ -77,6 +82,7 @@ class MyApp extends StatelessWidget {
     },
     routes: [
       GoRoute(
+          name: 'login',
           path: '/login',
           builder: (context, state) {
             return SignInScreen(
@@ -127,6 +133,7 @@ class MyApp extends StatelessWidget {
             );
           }),
       GoRoute(
+          name: 'verify-email',
           path: '/verify-email',
           builder: (context, state) {
             return EmailVerificationScreen(
@@ -142,6 +149,7 @@ class MyApp extends StatelessWidget {
             );
           }),
       GoRoute(
+        name: 'forgot-password',
         path: '/forgot-password',
         builder: (context, state) {
           final arguments = state.uri.queryParameters;
@@ -161,6 +169,7 @@ class MyApp extends StatelessWidget {
             StatefulShellBranch(
               routes: <RouteBase>[
                 GoRoute(
+                  name: 'home',
                   path: '/',
                   builder: (context, state) {
                     return const MyHomePage(title: 'Snap!');
@@ -171,6 +180,7 @@ class MyApp extends StatelessWidget {
             StatefulShellBranch(
               routes: <RouteBase>[
                 GoRoute(
+                  name: 'take-snap',
                   path: '/snap',
                   builder: (context, state) {
                     return const TakeSnapScreen();
@@ -181,6 +191,7 @@ class MyApp extends StatelessWidget {
             StatefulShellBranch(
               routes: <RouteBase>[
                 GoRoute(
+                  name: 'profile',
                   path: '/profile',
                   builder: (context, state) {
                     return ProfileScreen(
@@ -219,12 +230,14 @@ class MyApp extends StatelessWidget {
             ),
           ]),
       GoRoute(
+          name: 'snap-detail',
           path: '/snap/:id',
           builder: (context, state) {
             return DetailSnapScreen(
                 id: state.pathParameters['id']!, data: state.extra);
           }),
       GoRoute(
+          name: 'settings',
           path: '/settings',
           builder: (context, state) {
             return const SettingsScreen();
