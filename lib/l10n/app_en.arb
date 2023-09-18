@@ -3,6 +3,7 @@
     "take": "Take",
     "account": "Account",
     "send": "Send",
+    "title": "Title",
     "increment": "Increment Counter",
     "nItems": "{count, plural, =0{Never pushed} =1{Pushed once} other{Pushed {count} times}}",
     "@nItems": {

@@ -39,18 +39,18 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDZt98CIUYUBPeW32wvtA5hWOFlSLp03C0',
-    appId: '1:281865054216:web:e2d79f491c1cc7d1',
+    appId: '1:281865054216:web:b3a99ae715f22279f889bd',
     messagingSenderId: '281865054216',
     projectId: 'firebase-ptw',
     authDomain: 'ptw.firebaseapp.com',
     databaseURL: 'https://ptw.firebaseio.com',
     storageBucket: 'firebase-ptw.appspot.com',
-    measurementId: 'G-9237PK55GZ',
+    measurementId: 'G-VM27B0H9QJ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB_dLmiHHHoDBvJDySI3uZDVrXf-JdVTsE',
-    appId: '1:281865054216:android:f21625d29dd4a859f889bd',
+    appId: '1:281865054216:android:fe2c86110aabef18f889bd',
     messagingSenderId: '281865054216',
     projectId: 'firebase-ptw',
     databaseURL: 'https://ptw.firebaseio.com',
@@ -59,23 +59,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAjVweah0fyrsmNbVnJtXkgl2dC6NBzOiA',
-    appId: '1:281865054216:ios:8e0e40316f785630f889bd',
+    appId: '1:281865054216:ios:4bd05c96e30d4777f889bd',
     messagingSenderId: '281865054216',
     projectId: 'firebase-ptw',
     databaseURL: 'https://ptw.firebaseio.com',
     storageBucket: 'firebase-ptw.appspot.com',
-    iosClientId: '281865054216-eidk1u03c0j8nfudhttgki3kqh16vehm.apps.googleusercontent.com',
+    iosClientId: '281865054216-btk0ck7tcs5rgev0lbql01qoistr6bab.apps.googleusercontent.com',
     iosBundleId: 'ch.fritscher.snap',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAjVweah0fyrsmNbVnJtXkgl2dC6NBzOiA',
-    appId: '1:281865054216:ios:9b6804d79ab4c6f9f889bd',
+    appId: '1:281865054216:ios:34ed6a8df15f2984f889bd',
     messagingSenderId: '281865054216',
     projectId: 'firebase-ptw',
     databaseURL: 'https://ptw.firebaseio.com',
     storageBucket: 'firebase-ptw.appspot.com',
-    iosClientId: '281865054216-ut4ip07ghg3s803dq676h9sck6qao9j5.apps.googleusercontent.com',
+    iosClientId: '281865054216-sgnrt0pp450pfth1qo5fnjdf5pv8li2u.apps.googleusercontent.com',
     iosBundleId: 'ch.fritscher.snap.RunnerTests',
   );
 

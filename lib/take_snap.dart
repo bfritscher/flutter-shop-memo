@@ -37,8 +37,8 @@ class TakeSnap extends StatefulWidget {
 
 class _TakeSnapState extends State<TakeSnap> {
   final picker = ImagePicker();
-  File? _pickedImage;
-  File? _croppedImage;
+  XFile? _pickedImage;
+  CroppedFile? _croppedImage;
   bool _isUploading = false;
 
   Future getImage() async {
@@ -46,8 +46,13 @@ class _TakeSnapState extends State<TakeSnap> {
 
     setState(() {
       if (pickedFile != null) {
-        _pickedImage = File(pickedFile.path);
-        _cropImage();
+        _pickedImage = pickedFile;
+        if (!kIsWeb) {
+          // cropping does not work well on web
+          _cropImage();
+        } else {
+          _croppedImage = CroppedFile(_pickedImage!.path);
+        }
       } else {
         print('No image selected.');
         _pickedImage = null;
@@ -82,11 +87,11 @@ class _TakeSnapState extends State<TakeSnap> {
             context: context,
             presentStyle: CropperPresentStyle.dialog,
             boundary: const CroppieBoundary(
-              width: 256,
-              height: 256,
+              width: 512,
+              height: 512,
             ),
             viewPort:
-                const CroppieViewPort(width: 256, height: 256, type: 'square'),
+                const CroppieViewPort(width: 512, height: 512, type: 'square'),
             enableExif: false,
             enableZoom: true,
             showZoomer: true,
@@ -95,7 +100,7 @@ class _TakeSnapState extends State<TakeSnap> {
       );
       if (croppedFile != null) {
         setState(() {
-          _croppedImage = File(croppedFile.path);
+          _croppedImage = croppedFile;
         });
       }
     }
@@ -115,7 +120,7 @@ class _TakeSnapState extends State<TakeSnap> {
             await _croppedImage!
                 .readAsBytes(), // Does not work on web as File is from io
             SettableMetadata(contentType: 'image/jpeg'))
-        : storageReference.putFile(_croppedImage!);
+        : storageReference.putFile(File(_croppedImage!.path));
 
     await uploadTask.whenComplete(() => null);
 
@@ -155,7 +160,7 @@ class _TakeSnapState extends State<TakeSnap> {
             child: Stack(alignment: Alignment.center, children: [
               kIsWeb
                   ? Image.network(_croppedImage!.path)
-                  : Image.file(_croppedImage!),
+                  : Image.file(File(_croppedImage!.path)),
               const SizedBox(
                   height: 200, width: 200, child: CircularProgressIndicator()),
             ]),
@@ -166,17 +171,14 @@ class _TakeSnapState extends State<TakeSnap> {
           Expanded(
               child: kIsWeb
                   ? Image.network(_croppedImage!.path)
-                  : Image.file(_croppedImage!)),
+                  : Image.file(File(_croppedImage!.path))),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               autofocus: true,
               controller: titleController,
               decoration: InputDecoration(
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.surfaceVariant,
-                border: const OutlineInputBorder(),
-                labelText: 'Title',
+                labelText: AppLocalizations.of(context)!.title,
               ),
             ),
           ),

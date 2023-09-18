@@ -53,14 +53,17 @@ class _MyHomePageState extends State<MyHomePage> {
       _bannerText = remoteConfig.getString('banner_text');
     });
     print('Remote config listener');
-    remoteConfig.onConfigUpdated.listen((event) async {
-      print('Remote config updated');
-      await remoteConfig.activate();
-      setState(() {
-        _showBanner = remoteConfig.getBool('show_banner');
-        _bannerText = remoteConfig.getString('banner_text');
-      });
-    }, onError: (error) => print('Remote config error: ${error.toString()}'));
+    if (!kIsWeb) {
+      // not supported on web
+      remoteConfig.onConfigUpdated.listen((event) async {
+        print('Remote config updated');
+        await remoteConfig.activate();
+        setState(() {
+          _showBanner = remoteConfig.getBool('show_banner');
+          _bannerText = remoteConfig.getString('banner_text');
+        });
+      }, onError: (error) => print('Remote config error: ${error.toString()}'));
+    }
   }
 
   @override

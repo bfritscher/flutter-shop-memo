@@ -3,6 +3,7 @@
     "take": "Prendre",
     "account": "Compte",
     "send": "Envoyer",
+    "title": "Titre",    
     "increment": "Incrémenter Compteur",
     "nItems": "{count, plural, =0{Jamais appyuez} =1{Vous avez appuyé une fois} other{Vous avez appuyé {count} fois}}",
     "language": "Langue",

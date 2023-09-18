@@ -73,6 +73,11 @@ class MyApp extends StatelessWidget {
     ],
     redirect: (context, state) {
       final auth = FirebaseAuth.instance;
+      if (state.fullPath != null &&
+          state.fullPath!.contains('/forgot-password')) {
+        return null;
+      }
+
       if (auth.currentUser == null) {
         return '/login';
       }
@@ -88,51 +93,61 @@ class MyApp extends StatelessWidget {
           name: 'login',
           path: '/login',
           builder: (context, state) {
-            return SignInScreen(
-              sideBuilder: (context, constraints) => const Logo(),
-              headerBuilder: (context, constraints, shrinkOffset) =>
-                  const Logo(),
-              actions: [
-                ForgotPasswordAction((context, email) {
-                  final uri = Uri(
-                    path: '/forgot-password',
-                    queryParameters: <String, String?>{
-                      'email': email,
-                    },
-                  );
-                  context.go(uri.toString());
-                }),
-                AuthStateChangeAction<SignedIn>((context, state) {
-                  if (!state.user!.emailVerified) {
-                    context.go('/verify-email');
-                  } else {
-                    context.go('/');
-                  }
-                }),
-              ],
-              subtitleBuilder: (context, action) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    action == AuthAction.signIn
-                        ? 'Welcome to Firebase UI! Please sign in to continue.'
-                        : 'Welcome to Firebase UI! Please create an account to continue',
-                  ),
-                );
-              },
-              footerBuilder: (context, action) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16),
+            // hack to fix ui link color
+            final originalTheme = Theme.of(context);
+            return Theme(
+              data: Theme.of(context).copyWith(
+                  colorScheme: Theme.of(context)
+                      .colorScheme
+                      .copyWith(primary: Colors.blue)),
+              child: SignInScreen(
+                sideBuilder: (context, constraints) =>
+                    Theme(data: originalTheme, child: const Logo()),
+                headerBuilder: (context, constraints, shrinkOffset) =>
+                    Theme(data: originalTheme, child: const Logo()),
+                actions: [
+                  ForgotPasswordAction((context, email) {
+                    final uri = Uri(
+                      path: '/forgot-password',
+                      queryParameters: <String, String?>{
+                        'email': email,
+                      },
+                    );
+                    // push required because ui auth does pop()
+                    context.push(uri.toString());
+                  }),
+                  AuthStateChangeAction<SignedIn>((context, state) {
+                    if (!state.user!.emailVerified) {
+                      context.go('/verify-email');
+                    } else {
+                      context.go('/');
+                    }
+                  }),
+                ],
+                subtitleBuilder: (context, action) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
                     child: Text(
                       action == AuthAction.signIn
-                          ? 'By signing in, you agree to our terms and conditions.'
-                          : 'By registering, you agree to our terms and conditions.',
-                      style: const TextStyle(color: Colors.grey),
+                          ? 'Welcome to Firebase UI! Please sign in to continue.'
+                          : 'Welcome to Firebase UI! Please create an account to continue',
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+                footerBuilder: (context, action) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text(
+                        action == AuthAction.signIn
+                            ? 'By signing in, you agree to our terms and conditions.'
+                            : 'By registering, you agree to our terms and conditions.',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  );
+                },
+              ),
             );
           }),
       GoRoute(
@@ -296,9 +311,21 @@ class MyApp extends StatelessWidget {
             colorScheme: darkScheme,
             // fix auth ui in dark mode
             inputDecorationTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: darkScheme.surfaceVariant,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: darkScheme.onPrimary,
+                ),
               ),
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              labelStyle: const TextStyle(color: Colors.white),
             ),
             outlinedButtonTheme: OutlinedButtonThemeData(
               style: ButtonStyle(
