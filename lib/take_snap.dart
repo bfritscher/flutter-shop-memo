@@ -172,8 +172,10 @@ class _TakeSnapState extends State<TakeSnap> {
             child: TextField(
               autofocus: true,
               controller: titleController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Theme.of(context).colorScheme.surfaceVariant,
+                border: const OutlineInputBorder(),
                 labelText: 'Title',
               ),
             ),
