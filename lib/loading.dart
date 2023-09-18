@@ -56,14 +56,16 @@ class SquareTile extends StatelessWidget {
       animation: squareSizeChangeTweenAnimation,
       builder: (context, child) {
         var side = squareSizeChangeTweenAnimation.value;
-        return SizedBox(
-          height: maxSide,
-          width: maxSide,
-          child: Center(
-            child: Container(
-              width: side,
-              height: side,
-              color: getColor(context),
+        return Expanded(
+          child: SizedBox(
+            height: maxSide,
+            width: maxSide,
+            child: Center(
+              child: Container(
+                width: side,
+                height: side,
+                color: getColor(context),
+              ),
             ),
           ),
         );
@@ -141,48 +143,54 @@ class _LoadingAnimationState extends State<LoadingAnimation>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SquareTile(
-                squareType: SquareType.first,
-                animationController: animationController,
-              ),
-              SquareTile(
-                  squareType: SquareType.second,
-                  animationController: animationController),
-              SquareTile(
-                  squareType: SquareType.third,
-                  animationController: animationController),
-            ],
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SquareTile(
+                  squareType: SquareType.first,
+                  animationController: animationController,
+                ),
+                SquareTile(
+                    squareType: SquareType.second,
+                    animationController: animationController),
+                SquareTile(
+                    squareType: SquareType.third,
+                    animationController: animationController),
+              ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SquareTile(
-                  squareType: SquareType.second,
-                  animationController: animationController),
-              SquareTile(
-                  squareType: SquareType.third,
-                  animationController: animationController),
-              SquareTile(
-                  squareType: SquareType.fourth,
-                  animationController: animationController),
-            ],
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SquareTile(
+                    squareType: SquareType.second,
+                    animationController: animationController),
+                SquareTile(
+                    squareType: SquareType.third,
+                    animationController: animationController),
+                SquareTile(
+                    squareType: SquareType.fourth,
+                    animationController: animationController),
+              ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SquareTile(
-                  squareType: SquareType.third,
-                  animationController: animationController),
-              SquareTile(
-                  squareType: SquareType.fourth,
-                  animationController: animationController),
-              SquareTile(
-                  squareType: SquareType.fifth,
-                  animationController: animationController),
-            ],
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SquareTile(
+                    squareType: SquareType.third,
+                    animationController: animationController),
+                SquareTile(
+                    squareType: SquareType.fourth,
+                    animationController: animationController),
+                SquareTile(
+                    squareType: SquareType.fifth,
+                    animationController: animationController),
+              ],
+            ),
           )
         ],
       ),

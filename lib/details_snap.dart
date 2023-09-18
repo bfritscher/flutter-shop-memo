@@ -122,15 +122,17 @@ class _AnimatedContainerDemoState extends State<AnimatedContainerDemo> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedContainer(
-              margin: EdgeInsets.all(margin),
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(borderRadius),
+            Expanded(
+              child: AnimatedContainer(
+                margin: EdgeInsets.all(margin),
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(borderRadius),
+                ),
+                duration: _duration,
+                curve: Curves.easeInOut,
+                child: widget.child,
               ),
-              duration: _duration,
-              curve: Curves.easeInOut,
-              child: widget.child,
             ),
           ],
         ),

@@ -21,6 +21,7 @@ flutter pub run flutter_launcher_icons
 ```
 flutter build appbundle  --build-name "1.0" --build-number 1
 flutter install
+https://play.google.com/console/
 ```
 
 
