@@ -20,6 +20,8 @@ flutter pub run flutter_launcher_icons
 
 ```
 flutter build appbundle  --build-name "1.0" --build-number 1
+# to test with sideloading
+flutter build apk
 flutter install
 https://play.google.com/console/
 ```
