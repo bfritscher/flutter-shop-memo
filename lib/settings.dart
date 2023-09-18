@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -11,19 +12,22 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final settings = context.watch<SettingsState>();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings, 
-        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+        title: Text(AppLocalizations.of(context)!.settings,
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
         leading: BackButton(
             onPressed: () {
-              context.go('/profile');
+              if (kIsWeb) {
+                context.go('/profile');
+              } else {
+                context.pop();
+              }
             },
             color: Theme.of(context).colorScheme.onPrimary),
-        backgroundColor: Theme.of(context).colorScheme.primary,        
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: SettingsList(
         sections: [
@@ -112,4 +116,3 @@ class SettingsListPickerScreen extends StatelessWidget {
     );
   }
 }
-

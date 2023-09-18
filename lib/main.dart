@@ -60,11 +60,14 @@ void main() async {
   runApp(MyApp());
 }
 
+final _parentKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
 // GoRouter configuration
   final _router = GoRouter(
+    navigatorKey: _parentKey,
     observers: [
       FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
     ],
@@ -215,7 +218,13 @@ class MyApp extends StatelessWidget {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                           ),
-                          onPressed: () => context.go('/settings'),
+                          onPressed: () {
+                            if (kIsWeb) {
+                              context.go('/settings');
+                            } else {
+                              context.push('/settings');
+                            }
+                          },
                           child: Text(
                             AppLocalizations.of(context)!.settings,
                             style: TextStyle(
@@ -232,6 +241,8 @@ class MyApp extends StatelessWidget {
       GoRoute(
           name: 'snap-detail',
           path: '/snap/:id',
+          // fix bug where the navbar is not hidden
+          parentNavigatorKey: _parentKey,
           builder: (context, state) {
             return DetailSnapScreen(
                 id: state.pathParameters['id']!, data: state.extra);
@@ -239,6 +250,7 @@ class MyApp extends StatelessWidget {
       GoRoute(
           name: 'settings',
           path: '/settings',
+          parentNavigatorKey: _parentKey,
           builder: (context, state) {
             return const SettingsScreen();
           }),

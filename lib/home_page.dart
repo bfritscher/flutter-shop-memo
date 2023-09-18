@@ -3,6 +3,7 @@ import 'dart:math' show max;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -216,7 +217,11 @@ class StoriesList extends StatelessWidget {
                       if (item.get('processed')) {
                         return GestureDetector(
                             onTap: () {
-                              context.go('/snap/${item.id}', extra: item);
+                              if (kIsWeb) {
+                                context.go('/snap/${item.id}', extra: item);
+                              } else {
+                                context.push('/snap/${item.id}', extra: item);
+                              }
                             },
                             child: Hero(
                               tag: item.id,

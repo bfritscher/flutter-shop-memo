@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,7 +17,11 @@ class DetailSnapScreen extends StatelessWidget {
       appBar: AppBar(
         leading: BackButton(
             onPressed: () {
-              context.go('/');
+              if (kIsWeb) {
+                context.go('/');
+              } else {
+                context.pop();
+              }
             },
             color: Theme.of(context).colorScheme.onPrimary),
         backgroundColor: Theme.of(context).colorScheme.primary,
