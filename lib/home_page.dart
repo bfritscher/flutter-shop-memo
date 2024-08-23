@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return IconButton(
                   icon: const Icon(Icons.more_vert),
                   style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all<Color>(
+                    foregroundColor: WidgetStateProperty.all<Color>(
                         Theme.of(context).colorScheme.onPrimary),
                   ),
                   tooltip: 'Show menu',
