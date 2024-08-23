@@ -26,6 +26,7 @@ import 'settings.dart';
 import 'settings_provider.dart';
 import 'take_snap.dart';
 import 'widgets.dart';
+import 'profile/custom_profile_screen.dart';
 
 var settingsStateProvider = SettingsState();
 
@@ -212,7 +213,7 @@ class MyApp extends StatelessWidget {
                   name: 'profile',
                   path: '/profile',
                   builder: (context, state) {
-                    return ProfileScreen(
+                    return CustomProfileScreen(
                       appBar: AppBar(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         title: Text(AppLocalizations.of(context)!.account,
@@ -312,7 +313,7 @@ class MyApp extends StatelessWidget {
             // fix auth ui in dark mode
             inputDecorationTheme: InputDecorationTheme(
               filled: true,
-              fillColor: darkScheme.surfaceVariant,
+              fillColor: darkScheme.surfaceContainerHighest,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: BorderSide(
@@ -329,18 +330,18 @@ class MyApp extends StatelessWidget {
             ),
             outlinedButtonTheme: OutlinedButtonThemeData(
               style: ButtonStyle(
-                padding: MaterialStateProperty.all<EdgeInsets>(
+                padding: WidgetStateProperty.all<EdgeInsets>(
                   const EdgeInsets.all(16),
                 ),
-                shape: MaterialStateProperty.all<OutlinedBorder>(
+                shape: WidgetStateProperty.all<OutlinedBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 backgroundColor:
-                    MaterialStateProperty.all<Color>(darkScheme.primary),
+                    WidgetStateProperty.all<Color>(darkScheme.primary),
                 foregroundColor:
-                    MaterialStateProperty.all<Color>(darkScheme.onPrimary),
+                    WidgetStateProperty.all<Color>(darkScheme.onPrimary),
               ),
             ),
             useMaterial3: true,

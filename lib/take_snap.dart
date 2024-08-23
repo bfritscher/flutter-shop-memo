@@ -68,9 +68,6 @@ class _TakeSnapState extends State<TakeSnap> {
         compressQuality: 100,
         maxHeight: 512,
         maxWidth: 512,
-        aspectRatioPresets: [
-          CropAspectRatioPreset.square,
-        ],
         aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
         uiSettings: [
           AndroidUiSettings(
@@ -79,22 +76,15 @@ class _TakeSnapState extends State<TakeSnap> {
             toolbarWidgetColor: Theme.of(context).colorScheme.onPrimary,
             initAspectRatio: CropAspectRatioPreset.square,
             lockAspectRatio: true,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+            ],
           ),
           IOSUiSettings(
             title: 'Cropper',
           ),
           WebUiSettings(
             context: context,
-            presentStyle: CropperPresentStyle.dialog,
-            boundary: const CroppieBoundary(
-              width: 512,
-              height: 512,
-            ),
-            viewPort:
-                const CroppieViewPort(width: 512, height: 512, type: 'square'),
-            enableExif: false,
-            enableZoom: true,
-            showZoomer: true,
           ),
         ],
       );
