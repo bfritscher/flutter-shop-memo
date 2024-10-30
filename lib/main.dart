@@ -22,11 +22,11 @@ import 'details_snap.dart';
 import 'firebase_options.dart';
 import 'home_page.dart';
 import 'oidc_eduid.dart';
+import 'profile/custom_profile_screen.dart';
 import 'settings.dart';
 import 'settings_provider.dart';
 import 'take_snap.dart';
 import 'widgets.dart';
-import 'profile/custom_profile_screen.dart';
 
 var settingsStateProvider = SettingsState();
 

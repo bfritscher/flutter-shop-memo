@@ -4,6 +4,10 @@
 
 import 'package:firebase_auth/firebase_auth.dart' as fba;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:firebase_ui_auth/src//widgets/internal/rebuild_scope.dart';
+import 'package:firebase_ui_auth/src/screens/internal/multi_provider_screen.dart';
+import 'package:firebase_ui_auth/src/widgets/internal/subtitle.dart';
+import 'package:firebase_ui_auth/src/widgets/internal/universal_icon_button.dart';
 import 'package:firebase_ui_localizations/firebase_ui_localizations.dart';
 import 'package:firebase_ui_oauth/firebase_ui_oauth.dart'
     hide OAuthProviderButtonBase;
@@ -11,11 +15,6 @@ import 'package:firebase_ui_shared/firebase_ui_shared.dart';
 import 'package:flutter/cupertino.dart' hide Title;
 import 'package:flutter/material.dart' hide Title;
 import 'package:flutter/services.dart';
-
-import 'package:firebase_ui_auth/src//widgets/internal/rebuild_scope.dart';
-import 'package:firebase_ui_auth/src/widgets/internal/subtitle.dart';
-import 'package:firebase_ui_auth/src/widgets/internal/universal_icon_button.dart';
-import 'package:firebase_ui_auth/src/screens/internal/multi_provider_screen.dart';
 
 import 'custom_provider_resolvers.dart';
 
@@ -53,7 +52,6 @@ class _AvailableProvidersRowState extends State<_AvailableProvidersRow> {
           action: AuthAction.link,
           auth: widget.auth,
         );
-        break;
       case 'password':
         await showGeneralDialog(
           context: context,
