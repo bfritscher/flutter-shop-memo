@@ -1,7 +1,7 @@
 /**
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
-const {initializeApp} = require("firebase-admin/app");
+const admin = require("firebase-admin");
 const {onRequest} = require("firebase-functions/v2/https");
 const {
   onDocumentDeleted,
@@ -9,9 +9,13 @@ const {
 } = require("firebase-functions/v2/firestore");
 const {getStorage, getDownloadURL} = require("firebase-admin/storage");
 const {getFirestore} = require("firebase-admin/firestore");
-const logger = require("firebase-functions/logger");
+const {logger} = require("firebase-functions");
 
-initializeApp();
+if (!admin.apps.length) {
+  admin.initializeApp();
+} else {
+  admin.app(); // Use the already initialized default app
+}
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started?gen=2nd
@@ -53,7 +57,7 @@ async function transformImage(image, title="") {
   formData.append("text_prompts[1][weight]", -1);
 
   const response = await fetch(
-      "https://api.stability.ai/v1/generation/stable-diffusion-512-v2-1/image-to-image",
+      "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image",
       {
         method: "POST",
         headers: {
